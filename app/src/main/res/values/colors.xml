@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorSecondary">#FFEB3B</color>
+    <color name="warnabiru">#3F51B5</color>
 </resources>
