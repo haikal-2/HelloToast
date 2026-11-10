@@ -1,7 +1,6 @@
 package lat.pam.hellotoast
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Observer
@@ -44,28 +44,29 @@ class MainActivity : AppCompatActivity() {
             mCount = it
         }
 
-        buttonCountUp.setOnClickListener(View.OnClickListener {
-            mCount = mCount + 1
+        buttonCountUp.setOnClickListener {
+            mCount++
             Log.d("mCount", mCount.toString())
-            model.currentName.setValue(mCount)
-        })
+            model.currentName.value = mCount
+        }
 
-        buttonToast.setOnClickListener(View.OnClickListener {
+        buttonToast.setOnClickListener {
             val tulisan: String = mShowCount?.text.toString()
-            val toast: Toast = Toast.makeText(this, "Angka yang dimunculkan " + tulisan, Toast.LENGTH_LONG)
+            val toast: Toast = Toast.makeText(this, "Angka yang dimunculkan $tulisan", Toast.LENGTH_LONG)
             toast.show()
-        })
+        }
 
-        buttonSwitchPage.setOnClickListener(View.OnClickListener {
+        buttonSwitchPage.setOnClickListener {
             val intent = Intent(this, MainActivity2::class.java)
             startActivity(intent)
-        })
+        }
 
-        buttonBrowser.setOnClickListener(View.OnClickListener {
-            val intentbrowse = Intent(Intent.ACTION_VIEW)
-            intentbrowse.setData(Uri.parse("https://www.google.com/"))
+        buttonBrowser.setOnClickListener {
+            val intentbrowse = Intent(Intent.ACTION_VIEW).apply {
+                data = "https://www.google.com/".toUri()
+            }
             startActivity(intentbrowse)
-        })
+        }
 
         val mainView = findViewById<View>(R.id.main)
         if (mainView != null) {
