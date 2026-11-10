@@ -9,11 +9,14 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 
 class MainActivity : AppCompatActivity() {
+    private val model: NameViewModel by viewModels()
     private var mCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,11 +30,24 @@ class MainActivity : AppCompatActivity() {
         val buttonSwitchPage = findViewById<Button>(R.id.button_switchpage)
         val buttonBrowser = findViewById<Button>(R.id.button_browser)
 
+        // Create the observer which updates the UI.
+        val nameObserver = Observer<Int> { newName ->
+            // Update the UI, in this case, a TextView.
+            mShowCount?.text = newName.toString()
+        }
+
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        model.currentName.observe(this, nameObserver)
+
+        // Sync local mCount if ViewModel already holds a value
+        model.currentName.value?.let {
+            mCount = it
+        }
+
         buttonCountUp.setOnClickListener(View.OnClickListener {
-            mCount++
-            Log.d("mCount", Integer.toString(mCount))
-            if (mShowCount != null)
-                mShowCount.text = mCount.toString()
+            mCount = mCount + 1
+            Log.d("mCount", mCount.toString())
+            model.currentName.setValue(mCount)
         })
 
         buttonToast.setOnClickListener(View.OnClickListener {
